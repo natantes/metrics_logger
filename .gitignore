@@ -1,0 +1,31 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+FIREBASE_API_KEY="AIzaSyA7ceCbNxRtcUrDtGyEEmwTfNUQMSzHLnY"
+FIREBASE_AUTH_DOMAIN="data-visualizer-9cd0f.firebaseapp.com"
+FIREBASE_PROJECT_ID="data-visualizer-9cd0f"
+FIREBASE_STORAGE_ACCOUNT="data-visualizer-9cd0f.appspot.com"
+FIREBASE_MESSEGING_SENDER_ID="435187615116"
+FIREBASE_APP_ID="1:435187615116:web:724f055bddbd1fdd0e42a9"
+FIREBASE_MEASUREMENT_ID="G-62X3QJGRSW"
