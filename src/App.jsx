@@ -28,12 +28,13 @@ function App() {
         contrastText: "#fff",
       },
     },
-    overrides: {
+    components: {
       MuiButton: {
-        root: {
-          borderRadius: 20, // Increase border-radius
-          background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
-          // Add a gradient background
+        styleOverrides: {
+          root: {
+            borderRadius: 20, // Increased border-radius
+            // Gradient background
+          },
         },
       },
     },
