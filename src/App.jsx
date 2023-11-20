@@ -1,3 +1,61 @@
+import React, { useState, useEffect, useContext } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Snackbar } from "@mui/material";
+import { UserContext } from "./state/UserContext";
+import { Navbar } from "./components/Navbar";
+import { CssBaseline } from "@mui/material";
+import { SignIn } from "./components/SignIn";
+import PrivateRoute from "./auth/PrivateRoute";
+import Weight from "./components/Weight";
+
+function App() {
+  const { user } = useContext(UserContext);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  useEffect(() => {
+    if (!user) {
+      setOpenSnackbar(true);
+    }
+  }, [user]);
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
+
+  return (
+    <BrowserRouter>
+      <CssBaseline />
+      <Navbar />
+      <Routes>
+        <Route path="/signin" element={<SignIn />} />
+        <Route
+          path="/weight"
+          element={
+            <PrivateRoute>
+              <Weight />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/" element={<div>Home Page</div>} />
+        {!user && (
+          <Route path="*" element={<Navigate replace to="/signin" />} />
+        )}
+      </Routes>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={5000}
+        onClose={handleCloseSnackbar}
+        message="Please sign in to continue."
+      />
+    </BrowserRouter>
+  );
+}
+
+export default App;
+
 // import React, { useState, useEffect, useContext } from "react";
 // import { UserContext } from "./state/UserContext";
 // import { UnitContext } from "./state/UnitContext";
@@ -352,61 +410,3 @@
 // }
 
 // export default App;
-
-import React, { useState, useEffect, useContext } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { Snackbar } from "@mui/material";
-import { UserContext } from "./state/UserContext";
-import { Navbar } from "./components/Navbar";
-import { CssBaseline } from "@mui/material";
-import { SignIn } from "./components/SignIn";
-import PrivateRoute from "./auth/PrivateRoute";
-import Weight from "./components/Weight";
-
-function App() {
-  const { user } = useContext(UserContext);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-
-  useEffect(() => {
-    if (!user) {
-      setOpenSnackbar(true);
-    }
-  }, [user]);
-
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpenSnackbar(false);
-  };
-
-  return (
-    <BrowserRouter>
-      <CssBaseline />
-      <Navbar />
-      <Routes>
-        <Route path="/signin" element={<SignIn />} />
-        <Route
-          path="/weight"
-          element={
-            <PrivateRoute>
-              <Weight />
-            </PrivateRoute>
-          }
-        />
-        <Route path="/" element={<div>Home Page</div>} />
-        {!user && (
-          <Route path="*" element={<Navigate replace to="/signin" />} />
-        )}
-      </Routes>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={5000}
-        onClose={handleCloseSnackbar}
-        message="Please sign in to continue."
-      />
-    </BrowserRouter>
-  );
-}
-
-export default App;
