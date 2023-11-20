@@ -19,6 +19,8 @@ export const Navbar = () => {
         background: "#536b78",
         boxShadow: "none",
         borderBottom: "1px solid #eeeeee",
+        paddingTop: "15px",
+        paddingBottom: "15px",
       }}
     >
       <Toolbar>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { UserContext } from "../state/UserContext";
 import { UnitContext } from "../state/UnitContext";
 import { Navbar } from "./Navbar";
@@ -30,6 +30,7 @@ import { convertKgToLbs, convertLbsToKg } from "../utilities/functions";
 import { parseISO } from "date-fns";
 
 function Weight() {
+  const { user, setUser } = useContext(UserContext);
   const { unit, setUnit } = useContext(UnitContext);
   const [weight, setWeight] = useState("");
   // Helper function to format date to datetime-local format
@@ -42,12 +43,14 @@ function Weight() {
   // Set initial dateTime state using the helper function
   const [dateTime, setDateTime] = useState(toLocalISOString(new Date()));
   const [weights, setWeights] = useState([]);
+  const weightsRef = useRef();
+  weightsRef.current = weights;
   const [selectedWeightId, setSelectedWeightId] = useState(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const { user, setUser } = useContext(UserContext);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log(currentUser);
       if (currentUser) {
         setUser(currentUser);
         // Call fetchWeights here when a user is signed in
@@ -61,6 +64,10 @@ function Weight() {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    console.log(weights);
+  }, [weights]);
+
   // This useEffect should now be responsible for real-time updates
   // to the weights when a user is logged in.
   useEffect(() => {
@@ -68,6 +75,7 @@ function Weight() {
     setWeights([]);
 
     if (user) {
+      fetchWeights(user.uid);
       const weightsRef = collection(db, "weights");
       const q = query(
         weightsRef,
@@ -84,7 +92,8 @@ function Weight() {
             timestamp: doc.data().timestamp.toDate(),
           }))
           .sort((a, b) => a.timestamp - b.timestamp);
-
+        console.log("CURRENT WEIGHT DATA IS");
+        console.log(weightsData);
         setWeights(weightsData);
       });
 
@@ -123,6 +132,9 @@ function Weight() {
           };
         })
         .sort((a, b) => a.timestamp - b.timestamp);
+
+      console.log("FETCHED WEIGHTS DATA IS");
+      console.log(weightsData);
       setWeights(weightsData);
     } catch (error) {
       console.error("Failed to fetch weights:", error);
@@ -138,29 +150,28 @@ function Weight() {
     };
   }, []);
 
-  useEffect(() => {
-    const weightsRef = collection(db, "weights");
-    const q = query(weightsRef, orderBy("timestamp"));
+  // useEffect(() => {
+  //   const weightsRef = collection(db, "weights");
+  //   const q = query(weightsRef, orderBy("timestamp"));
 
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const weightsData = querySnapshot.docs
-        .map((doc) => ({
-          id: doc.id,
-          weight: doc.data().weight,
-          timestamp: doc.data().timestamp.toDate(),
-        }))
-        .sort((a, b) => a.timestamp - b.timestamp);
+  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //     const weightsData = querySnapshot.docs
+  //       .map((doc) => ({
+  //         id: doc.id,
+  //         weight: doc.data().weight,
+  //         timestamp: doc.data().timestamp.toDate(),
+  //       }))
+  //       .sort((a, b) => a.timestamp - b.timestamp);
 
-      setWeights(weightsData);
-    });
+  //     setWeights(weightsData);
+  //   });
 
-    return () => unsubscribe(); // Clean up the listener
-  }, []);
+  //   return () => unsubscribe(); // Clean up the listener
+  // }, []);
 
   const handleSubmit = async (e) => {
     const parsedWeight = parseFloat(weight);
 
-    // error handling
     if (!isFinite(parsedWeight)) {
       console.log("Invalid weight");
       return;
@@ -276,7 +287,11 @@ function Weight() {
           </Box>
         </Grid>
 
-        <StyledWeightChart key={windowWidth} data={weights} unit={unit} />
+        <StyledWeightChart
+          key={windowWidth}
+          data={weightsRef.current}
+          unit={unit}
+        />
 
         <Box
           sx={{
@@ -312,7 +327,6 @@ function Weight() {
                   margin: 1,
                 }}
               >
-                {console.log(weightEntry.timestamp.seconds)}
                 <Typography variant="body1">
                   {unit === "kg"
                     ? Math.round(weightEntry.weight * 100) / 100
