@@ -82,11 +82,10 @@ const StyledWeightChart = ({ data, unit }) => {
         data: sortedData.map((d) =>
           unit === "kg" ? d.weight : convertKgToLbs(d.weight)
         ),
-        fill: false,
         backgroundColor: "transparent",
         pointBorderWidth: 1,
         borderColor: "rgb(75, 192, 192)",
-        tension: 0.3,
+        tension: 0.2,
       },
     ],
   };

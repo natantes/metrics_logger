@@ -74,8 +74,9 @@ function Weight() {
     // Clear the weights when there is no user or when the user changes
     setWeights([]);
 
+    let unsubscribe = () => {};
+
     if (user) {
-      fetchWeights(user.uid);
       const weightsRef = collection(db, "weights");
       const q = query(
         weightsRef,
@@ -84,7 +85,7 @@ function Weight() {
       );
 
       // Subscribe to onSnapshot and store the unsubscribe function
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      unsubscribe = onSnapshot(q, (querySnapshot) => {
         const weightsData = querySnapshot.docs
           .map((doc) => ({
             id: doc.id,
@@ -92,15 +93,14 @@ function Weight() {
             timestamp: doc.data().timestamp.toDate(),
           }))
           .sort((a, b) => a.timestamp - b.timestamp);
-        console.log("CURRENT WEIGHT DATA IS");
-        console.log(weightsData);
+
         setWeights(weightsData);
       });
-
-      // Return the unsubscribe function to be called when the component unmounts
-      // or when the user changes
-      return unsubscribe;
     }
+
+    // Return the unsubscribe function to be called when the component unmounts
+    // or when the user changes
+    return unsubscribe;
   }, [user]);
 
   const fetchWeights = async (userId) => {
@@ -149,25 +149,6 @@ function Weight() {
       );
     };
   }, []);
-
-  // useEffect(() => {
-  //   const weightsRef = collection(db, "weights");
-  //   const q = query(weightsRef, orderBy("timestamp"));
-
-  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //     const weightsData = querySnapshot.docs
-  //       .map((doc) => ({
-  //         id: doc.id,
-  //         weight: doc.data().weight,
-  //         timestamp: doc.data().timestamp.toDate(),
-  //       }))
-  //       .sort((a, b) => a.timestamp - b.timestamp);
-
-  //     setWeights(weightsData);
-  //   });
-
-  //   return () => unsubscribe(); // Clean up the listener
-  // }, []);
 
   const handleSubmit = async (e) => {
     const parsedWeight = parseFloat(weight);
@@ -296,14 +277,14 @@ function Weight() {
         <Box
           sx={{
             border: 2,
-            borderColor: "black", // gray color
-            borderRadius: 2,
+            borderColor: "black",
+            borderRadius: 4,
             padding: 3,
-            width: "65%", // Adjust this as needed
+            width: "65%",
             height: "auto",
             margin: "auto", // Center the box
             marginTop: "30px",
-            maxHeight: "300px", // Adjust as needed
+            maxHeight: "300px",
             overflowY: "auto",
           }}
         >

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { Snackbar } from "@mui/material";
+import { Snackbar, Box } from "@mui/material";
 import { UserContext } from "./state/UserContext";
 import { Navbar } from "./components/Navbar";
 import { CssBaseline } from "@mui/material";
@@ -8,6 +8,8 @@ import { SignIn } from "./components/SignIn";
 import PrivateRoute from "./auth/PrivateRoute";
 import Weight from "./components/Weight";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ComingSoon } from "./components/ComingSoon";
+import { LandingPage } from "./components/LandingPage";
 
 function App() {
   const { user } = useContext(UserContext);
@@ -57,7 +59,13 @@ function App() {
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Navbar />
+        <Box
+          sx={{
+            marginBottom: "60px",
+          }}
+        >
+          <Navbar />
+        </Box>
         <Routes>
           <Route path="/signin" element={<SignIn />} />
           <Route
@@ -68,7 +76,23 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route path="/" element={<div>Home Page</div>} />
+          <Route
+            path="/nutrients"
+            element={
+              <PrivateRoute>
+                <ComingSoon />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/about"
+            element={
+              <PrivateRoute>
+                <ComingSoon />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/" element={<LandingPage />} />
           {!user && (
             <Route path="*" element={<Navigate replace to="/signin" />} />
           )}
