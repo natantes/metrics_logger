@@ -131,6 +131,7 @@ const StyledWeightChart = ({ data, unit }) => {
     responsive: true,
   };
 
+  
   return (
     <Box
       sx={{
