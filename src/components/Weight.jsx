@@ -28,6 +28,7 @@ import {
 import { onAuthStateChanged } from "firebase/auth";
 import { convertKgToLbs, convertLbsToKg } from "../utilities/functions";
 import { parseISO } from "date-fns";
+import DataHeatmap from "./Heatmap"; // Import the generic heatmap component
 
 function Weight() {
   const { user, setUser } = useContext(UserContext);
@@ -133,12 +134,8 @@ function Weight() {
         })
         .sort((a, b) => a.timestamp - b.timestamp);
 
-      console.log("FETCHED WEIGHTS DATA IS");
-      console.log(weightsData);
       setWeights(weightsData);
-    } catch (error) {
-      console.error("Failed to fetch weights:", error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -208,6 +205,19 @@ function Weight() {
   };
 
   return (
+    <Grid
+      container
+      spacing={0}
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      sx={{ minHeight: "100vh" }}
+    >
+      <h1>Coming Soon</h1>
+    </Grid>
+  );
+
+  return (
     <React.Fragment>
       <Grid
         container
@@ -217,6 +227,26 @@ function Weight() {
         justifyContent="flex-start" // Changed from center to flex-start
         sx={{ minHeight: "100vh", paddingTop: "5vh", marginBottom: "5vh" }} // Added paddingTop
       >
+        <Box
+          sx={{
+            border: 2,
+            borderColor: "accent.main",
+            borderRadius: 1,
+            padding: 3,
+            width: "65%",
+            height: "auto",
+            margin: "auto", // Center the box
+          }}
+        >
+          <DataHeatmap
+            data={weights.map((weight) => ({
+              date: weight.timestamp.toISOString().slice(0, 10),
+              value: weight.weight,
+            }))}
+            valueLabel="weight (kg)"
+          />
+        </Box>
+
         <Grid>
           <Box
             sx={{
@@ -257,11 +287,14 @@ function Weight() {
                 type="submit"
                 variant="contained"
                 onClick={handleSubmit}
-                sx={{ margin: "0 8px" }}
+                sx={{ margin: "0 8px", borderRadius: "4px" }}
               >
                 Submit
               </Button>
-              <Button onClick={() => setUnit(unit === "kg" ? "lbs" : "kg")}>
+              <Button
+                onClick={() => setUnit(unit === "kg" ? "lbs" : "kg")}
+                sx={{ margin: "0 8px", borderRadius: "4px" }}
+              >
                 Toggle Lb/Kg
               </Button>
             </Box>
@@ -277,7 +310,7 @@ function Weight() {
         <Box
           sx={{
             border: 2,
-            borderColor: "black",
+            borderColor: "accent.main",
             borderRadius: 4,
             padding: 3,
             width: "65%",
@@ -321,6 +354,7 @@ function Weight() {
                     size="small"
                     variant="contained"
                     onClick={() => handleEditEntry(weightEntry.id)}
+                    sx={{ marginLeft: 1, borderRadius: "4px" }}
                   >
                     Edit
                   </Button>
@@ -329,7 +363,7 @@ function Weight() {
                     variant="contained"
                     color="error"
                     onClick={() => handleDeleteEntry(weightEntry.id)}
-                    sx={{ marginLeft: 1 }}
+                    sx={{ marginLeft: 1, borderRadius: "4px" }}
                   >
                     Delete
                   </Button>

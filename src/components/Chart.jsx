@@ -136,8 +136,8 @@ const StyledWeightChart = ({ data, unit }) => {
     <Box
       sx={{
         border: 2,
-        borderColor: "primary.main",
-        borderRadius: 7,
+        borderColor: "accent.main",
+        borderRadius: 4,
         padding: 2,
         width: "65%",
         minHeight: "350px",

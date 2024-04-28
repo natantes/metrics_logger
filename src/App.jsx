@@ -10,15 +10,19 @@ import Weight from "./components/Weight";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { ComingSoon } from "./components/ComingSoon";
 import { LandingPage } from "./components/LandingPage";
+import HabitsList from "./components/HabitsList";
 
 function App() {
   const { user } = useContext(UserContext);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const theme = createTheme({
+    typography: {
+      fontFamily: "Inter, Arial, sans-serif",
+    },
     palette: {
       primary: {
-        main: "rgba(173, 216, 230, 1)", // Pastel Blue
+        main: "rgba(50, 50, 50)", // Pastel Blue
         contrastText: "#fff",
       },
       secondary: {
@@ -29,13 +33,16 @@ function App() {
         main: "rgba(255, 105, 101, 0.9)", // Pastel Red
         contrastText: "#fff",
       },
+      accent: {
+        main: "rgba(235, 236, 240, 1)",
+        contrastText: "#fff",
+      },
     },
     components: {
       MuiButton: {
         styleOverrides: {
           root: {
-            borderRadius: 20, // Increased border-radius
-            // Gradient background
+            borderRadius: 2, // Increased border-radius
           },
         },
       },
@@ -73,6 +80,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Weight />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/habits"
+            element={
+              <PrivateRoute>
+                <HabitsList user={user} />
               </PrivateRoute>
             }
           />

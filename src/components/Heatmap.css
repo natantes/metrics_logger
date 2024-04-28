@@ -1,0 +1,62 @@
+.react-calendar-heatmap rect {
+  width: 9px; /* Smaller cell size */
+  height: 9px; /* Smaller cell size */
+  rx: 2px; /* Rounded corners for SVG rectangle */
+  ry: 2px; /* Rounded corners for SVG rectangle */
+}
+
+.react-calendar-heatmap {
+  transform: scale(1); /* Scale down the whole calendar */
+  transform-origin: top left; /* Adjust the origin of transformation */
+}
+
+.color-scale-custom {
+  transition: fill 0.3s ease;
+  fill: var(
+    --heatmap-color,
+    #000000
+  ); /* Default color set through a CSS variable */
+}
+
+.opacity-level-1 {
+  opacity: 0.3;
+}
+.opacity-level-2 {
+  opacity: 0.35;
+}
+.opacity-level-3 {
+  opacity: 0.4;
+}
+.opacity-level-4 {
+  opacity: 0.45;
+}
+.opacity-level-5 {
+  opacity: 0.5;
+}
+.opacity-level-6 {
+  opacity: 0.55;
+}
+.opacity-level-7 {
+  opacity: 0.6;
+}
+.opacity-level-8 {
+  opacity: 0.65;
+}
+.opacity-level-9 {
+  opacity: 0.7;
+}
+.opacity-level-10 {
+  opacity: 0.75;
+}
+.opacity-level-11 {
+  opacity: 0.8;
+}
+.opacity-level-12 {
+  opacity: 0.85;
+}
+.opacity-level-13 {
+  opacity: 0.9;
+}
+.opacity-level-14 {
+  opacity: 1;
+}

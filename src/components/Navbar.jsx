@@ -51,6 +51,9 @@ export const Navbar = () => {
             </Typography>
           </Link>
           <Box sx={{ flexGrow: 1 }} />
+          <Link to="/habits" style={{ textDecoration: "none" }}>
+            <Typography sx={linkStyle}>Habits</Typography>
+          </Link>
           <Link to="/weight" style={{ textDecoration: "none" }}>
             <Typography sx={linkStyle}>Weight</Typography>
           </Link>
