@@ -145,11 +145,22 @@ function Weight() {
     const weightsRef = collection(userRef, "weights");
 
     try {
-      await addDoc(weightsRef, {
+      const newDoc = await addDoc(weightsRef, {
         timestamp: new Date(date),
         weight: weight,
       });
       console.log("Weight logged for date: ", date);
+
+      // Add the new entry directly to the existing list of weights
+      const newEntry = {
+        id: newDoc.id,
+        timestamp: new Date(date),
+        weight: weight,
+      };
+      setWeights((prevWeights) =>
+        [...prevWeights, newEntry].sort((a, b) => a.timestamp - b.timestamp)
+      );
+
       setWeight(""); // Clear the input field for weight
       setDateTime(toLocalISOString(new Date())); // Reset the date-time input
     } catch (error) {
