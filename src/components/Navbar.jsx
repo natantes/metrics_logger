@@ -5,7 +5,7 @@ import {
   Toolbar,
   Typography,
   Box,
-  IconButton,
+  Button,
   Container,
 } from "@mui/material";
 import { signInWithGoogle, signOutUser } from "../auth/auth";
@@ -47,7 +47,7 @@ export const Navbar = () => {
         <Toolbar disableGutters>
           <Link to="/" style={{ textDecoration: "none" }}>
             <Typography variant="h6" noWrap sx={linkStyle}>
-              Metrics Logger
+              Discipline&trade;
             </Typography>
           </Link>
           <Box sx={{ flexGrow: 1 }} />
@@ -64,31 +64,23 @@ export const Navbar = () => {
             <Typography sx={linkStyle}>About</Typography>
           </Link>
           {user ? (
-            <IconButton
+            <Button
+              type="submit"
+              variant="contained"
               onClick={handleSignOut}
-              sx={{
-                color: "rgb(214, 239, 255)",
-                "&:hover": {
-                  color: "#a9d0f5",
-                  transform: "scale(1.1)",
-                },
-              }}
+              sx={{ margin: "0 8px", borderRadius: "4px" }}
             >
-              <AccountCircleIcon />
-            </IconButton>
+              Sign Out
+            </Button>
           ) : (
-            <IconButton
+            <Button
+              type="submit"
+              variant="contained"
               onClick={signInWithGoogle}
-              sx={{
-                color: "white",
-                "&:hover": {
-                  color: "#a9d0f5",
-                  transform: "scale(1.1)",
-                },
-              }}
+              sx={{ margin: "0 8px", borderRadius: "4px" }}
             >
-              <AccountCircleIcon />
-            </IconButton>
+              Sign In
+            </Button>
           )}
         </Toolbar>
       </Container>

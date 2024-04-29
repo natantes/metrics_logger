@@ -111,31 +111,50 @@ function Weight() {
         return;
       }
 
-      const weightsRef = collection(db, "weights");
-      const q = query(
-        weightsRef,
-        where("userId", "==", userId),
-        orderBy("timestamp")
-      );
+      // Reference to the weights subcollection of a specific user
+      const weightsRef = collection(db, "users", userId, "weights");
+      const q = query(weightsRef, orderBy("timestamp"));
 
       const querySnapshot = await getDocs(q);
-      const weightsData = querySnapshot.docs
-        .map((doc) => {
-          const data = doc.data();
-          const timestamp = data.timestamp;
-          const date = timestamp.toDate
-            ? timestamp.toDate()
-            : new Date(timestamp);
-          return {
-            id: doc.id,
-            weight: data.weight,
-            timestamp: date,
-          };
-        })
-        .sort((a, b) => a.timestamp - b.timestamp);
+      const weightsData = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        const timestamp = data.timestamp;
+        const date = timestamp.toDate
+          ? timestamp.toDate()
+          : new Date(timestamp);
+        return {
+          id: doc.id,
+          weight: data.weight,
+          timestamp: date,
+        };
+      });
 
-      setWeights(weightsData);
-    } catch (error) {}
+      setWeights(weightsData.sort((a, b) => a.timestamp - b.timestamp));
+    } catch (error) {
+      console.error("Error fetching weights: ", error);
+    }
+  };
+
+  const logWeightEntry = async (date, weight) => {
+    if (!user || !user.uid) {
+      console.error("User object or User ID is undefined.");
+      return;
+    }
+
+    const userRef = doc(db, "users", user.uid);
+    const weightsRef = collection(userRef, "weights");
+
+    try {
+      await addDoc(weightsRef, {
+        timestamp: new Date(date),
+        weight: weight,
+      });
+      console.log("Weight logged for date: ", date);
+      setWeight(""); // Clear the input field for weight
+      setDateTime(toLocalISOString(new Date())); // Reset the date-time input
+    } catch (error) {
+      console.error("Error logging weight: ", error);
+    }
   };
 
   useEffect(() => {
@@ -148,6 +167,8 @@ function Weight() {
   }, []);
 
   const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+
     const parsedWeight = parseFloat(weight);
 
     if (!isFinite(parsedWeight)) {
@@ -158,18 +179,14 @@ function Weight() {
       return;
     }
 
-    e.preventDefault();
     const enteredWeight =
       unit === "kg" ? parsedWeight : convertLbsToKg(parsedWeight);
     const timestamp = parseISO(dateTime);
 
-    await addDoc(collection(db, "weights"), {
-      weight: enteredWeight,
-      timestamp: timestamp,
-      userId: user.uid, // Associate the weight entry with the user ID
-    });
+    await logWeightEntry(timestamp, enteredWeight); // Use the refactored logging function
 
-    setWeight("");
+    setWeight(""); // Clear the weight input field
+    setDateTime(toLocalISOString(new Date())); // Reset the date-time input
   };
 
   const handleEditEntry = (entryId) => {
@@ -182,13 +199,16 @@ function Weight() {
   };
 
   const handleDeleteEntry = async (entryId) => {
-    if (user) {
-      // Check if there is a user signed in
-      await deleteDoc(doc(db, "weights", entryId));
-      setWeights(weights.filter((w) => w.id !== entryId));
-    } else {
-      // Handle the case where there is no user signed in
+    if (!user) {
       console.log("No user signed in to delete weight");
+      return;
+    }
+
+    try {
+      await deleteDoc(doc(db, "users", user.uid, "weights", entryId));
+      setWeights(weights.filter((w) => w.id !== entryId));
+    } catch (error) {
+      console.error("Error deleting weight: ", error);
     }
   };
 
@@ -203,19 +223,6 @@ function Weight() {
       setDateTime(selectedWeightEntry.timestamp.toISOString().slice(0, 16));
     }
   };
-
-  return (
-    <Grid
-      container
-      spacing={0}
-      direction="column"
-      alignItems="center"
-      justifyContent="center"
-      sx={{ minHeight: "100vh" }}
-    >
-      <h1>Coming Soon</h1>
-    </Grid>
-  );
 
   return (
     <React.Fragment>

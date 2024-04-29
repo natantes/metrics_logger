@@ -1,25 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../firebase";
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  orderBy,
-  doc,
-  getDoc,
-  setDoc,
-} from "firebase/firestore";
+import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
 import Habit from "./Habits";
 import CreateHabitModal from "./CreateHabitModal";
-import {
-  Typography,
-  Box,
-  TextField,
-  Button,
-  Grid,
-  CssBaseline,
-} from "@mui/material";
+import { Box, TextField, Button, Grid } from "@mui/material";
 
 const HabitsList = ({ user }) => {
   const [habits, setHabits] = useState([]);
