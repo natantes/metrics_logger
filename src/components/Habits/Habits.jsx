@@ -1,4 +1,3 @@
-import React, { useState, useRef, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,19 +9,30 @@ import {
   Tooltip,
 } from "@mui/material";
 import { Box } from "@mui/material";
-import { SketchPicker } from "react-color";
-
-import { db } from "../firebase";
-import { doc, updateDoc } from "firebase/firestore";
-import DataHeatmap from "./Heatmap";
+import { db } from "../../firebase";
+import DataHeatmap from "../DataVis/Heatmap";
+import React, { useState, useRef, useEffect } from "react";
+import { Menu, MenuItem } from "@mui/material";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import HeatmapColorPicker from "../CommonComponents/ColorPicker";
 
 function Habit({ habit, user }) {
   const [openDialog, setOpenDialog] = useState(false);
+  const [menuAnchor, setMenuAnchor] = useState(null);
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [value, setValue] = useState("");
   const [color, setColor] = useState(habit.heatmap_color);
-  const [showPicker, setShowPicker] = useState(false);
+  // const [showPicker, setShowPicker] = useState(false);
   const timeoutRef = useRef(null);
+
+  const openMenu = (event) => {
+    setMenuAnchor(event.currentTarget);
+  };
+
+  const closeMenu = () => {
+    setMenuAnchor(null);
+  };
 
   const updateDatabase = async (newColor) => {
     if (!user || !user.uid || !habit.id) {
@@ -40,31 +50,47 @@ function Habit({ habit, user }) {
     }
   };
 
-  const handleColorChange = (color) => {
-    setColor(color.hex);
-    clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      updateDatabase(color.hex);
-      setShowPicker(false);
-    }, 4000); // Set the timeout for 10 seconds
-  };
+  const deleteHabit = async () => {
+    if (!user || !habit.id) {
+      console.error("User object or Habit ID is undefined.");
+      return;
+    }
 
-  const closePicker = () => {
-    clearTimeout(timeoutRef.current);
-    updateDatabase(color);
-    setShowPicker(false);
-  };
-
-  const togglePicker = () => {
-    if (showPicker) {
-      closePicker(); // Handle closing the picker and updating the database
-    } else {
-      setShowPicker(true);
-      timeoutRef.current = setTimeout(() => {
-        closePicker();
-      }, 4000);
+    try {
+      const habitRef = doc(db, "users", user.uid, "habitsList", habit.id);
+      await deleteDoc(habitRef);
+      console.log("Habit deleted.");
+      closeMenu(); // Close menu after deletion
+    } catch (error) {
+      console.error("Error deleting habit: ", error);
     }
   };
+
+  // const handleColorChange = (color) => {
+  //   setColor(color.hex);
+  //   clearTimeout(timeoutRef.current);
+  //   timeoutRef.current = setTimeout(() => {
+  //     updateDatabase(color.hex);
+  //     setShowPicker(false);
+  //   }, 4000); // Set the timeout for 10 seconds
+  // };
+
+  // const closePicker = () => {
+  //   clearTimeout(timeoutRef.current);
+  //   updateDatabase(color);
+  //   setShowPicker(false);
+  // };
+
+  // const togglePicker = () => {
+  //   if (showPicker) {
+  //     closePicker(); // Handle closing the picker and updating the database
+  //   } else {
+  //     setShowPicker(true);
+  //     timeoutRef.current = setTimeout(() => {
+  //       closePicker();
+  //     }, 4000);
+  //   }
+  // };
 
   useEffect(() => {
     // Cleanup the timeout when the component unmounts
@@ -128,7 +154,14 @@ function Habit({ habit, user }) {
             Log today
           </Button>
 
-          <Tooltip title="Change Color">
+          <HeatmapColorPicker
+            user={user}
+            habit={habit}
+            color={color}
+            setColor={setColor}
+          />
+
+          {/* <Tooltip title="Change Color">
             <Button
               variant="contained"
               sx={{
@@ -147,9 +180,21 @@ function Habit({ habit, user }) {
               <IconButton style={{ backgroundColor: color }} />
               Color
             </Button>
-          </Tooltip>
+          </Tooltip> */}
 
-          {showPicker && (
+          <IconButton onClick={openMenu}>
+            <MoreVertIcon />
+          </IconButton>
+
+          <Menu
+            anchorEl={menuAnchor}
+            open={Boolean(menuAnchor)}
+            onClose={closeMenu}
+          >
+            <MenuItem onClick={deleteHabit}>Delete</MenuItem>
+          </Menu>
+
+          {/* {showPicker && (
             <div
               style={{ position: "fixed", bottom: 40, right: 40, zIndex: 1500 }}
             >
@@ -158,7 +203,7 @@ function Habit({ habit, user }) {
                 onChangeComplete={handleColorChange}
               />
             </div>
-          )}
+          )} */}
         </Grid>
         <Grid item xs={12}>
           <Dialog

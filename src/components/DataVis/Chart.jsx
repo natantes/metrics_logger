@@ -12,7 +12,7 @@ import {
   TimeScale,
 } from "chart.js";
 import { Box } from "@mui/material";
-import { convertKgToLbs } from "../utilities/functions";
+import { convertKgToLbs } from "../../utilities/functions";
 import "chartjs-adapter-date-fns";
 
 // Register the Chart.js components and the Time scale
@@ -131,7 +131,6 @@ const StyledWeightChart = ({ data, unit }) => {
     responsive: true,
   };
 
-  
   return (
     <Box
       sx={{

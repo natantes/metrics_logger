@@ -6,11 +6,10 @@ import { Navbar } from "./components/Navbar";
 import { CssBaseline } from "@mui/material";
 import { SignIn } from "./components/SignIn";
 import PrivateRoute from "./auth/PrivateRoute";
-import Weight from "./components/Weight";
+import Weight from "./components/Tracking/Tracking";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { ComingSoon } from "./components/ComingSoon";
-import { LandingPage } from "./components/LandingPage";
-import HabitsList from "./components/HabitsList";
+import About from "./components/About";
+import HabitsList from "./components/Habits/HabitsList";
 
 function App() {
   const { user } = useContext(UserContext);
@@ -92,22 +91,14 @@ function App() {
             }
           />
           <Route
-            path="/nutrients"
-            element={
-              <PrivateRoute>
-                <ComingSoon />
-              </PrivateRoute>
-            }
-          />
-          <Route
             path="/about"
             element={
               <PrivateRoute>
-                <ComingSoon />
+                <About />
               </PrivateRoute>
             }
           />
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<SignIn />} />
           {!user && (
             <Route path="*" element={<Navigate replace to="/signin" />} />
           )}

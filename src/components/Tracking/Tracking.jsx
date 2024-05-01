@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { UserContext } from "../state/UserContext";
-import { UnitContext } from "../state/UnitContext";
-import { Navbar } from "./Navbar";
+import { UserContext } from "../../state/UserContext";
+import { UnitContext } from "../../state/UnitContext";
+import { Navbar } from "../Navbar";
 import InputAdornment from "@mui/material/InputAdornment";
 import {
   Typography,
@@ -12,8 +12,8 @@ import {
   CssBaseline,
 } from "@mui/material";
 
-import StyledWeightChart from "./Chart";
-import { db, auth } from "../firebase";
+import StyledWeightChart from "../DataVis/Chart";
+import { db, auth } from "../../firebase";
 import {
   addDoc,
   collection,
@@ -26,9 +26,9 @@ import {
   where,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import { convertKgToLbs, convertLbsToKg } from "../utilities/functions";
+import { convertKgToLbs, convertLbsToKg } from "../../utilities/functions";
 import { parseISO } from "date-fns";
-import DataHeatmap from "./Heatmap"; // Import the generic heatmap component
+import DataHeatmap from "../DataVis/Heatmap"; // Import the generic heatmap component
 
 function Weight() {
   const { user, setUser } = useContext(UserContext);

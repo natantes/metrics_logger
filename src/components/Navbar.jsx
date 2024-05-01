@@ -9,7 +9,6 @@ import {
   Container,
 } from "@mui/material";
 import { signInWithGoogle, signOutUser } from "../auth/auth";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link } from "react-router-dom";
 
 export const Navbar = () => {
@@ -24,7 +23,6 @@ export const Navbar = () => {
   const linkStyle = {
     color: "rgb(248, 249, 250)",
     "&:hover": {
-      fontfamily: "Montserrat",
       cursor: "pointer",
       color: "rgb(233, 236, 239)",
       transform: "scale(1.05)",
@@ -55,10 +53,7 @@ export const Navbar = () => {
             <Typography sx={linkStyle}>Habits</Typography>
           </Link>
           <Link to="/weight" style={{ textDecoration: "none" }}>
-            <Typography sx={linkStyle}>Weight</Typography>
-          </Link>
-          <Link to="/nutrients" style={{ textDecoration: "none" }}>
-            <Typography sx={linkStyle}>Nutrients</Typography>
+            <Typography sx={linkStyle}>Tracking</Typography>
           </Link>
           <Link to="/about" style={{ textDecoration: "none" }}>
             <Typography sx={linkStyle}>About</Typography>

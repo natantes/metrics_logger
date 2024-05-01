@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { db } from "../firebase";
+import { db } from "../../firebase";
 import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
 import Habit from "./Habits";
 import CreateHabitModal from "./CreateHabitModal";
