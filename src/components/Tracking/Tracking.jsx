@@ -3,14 +3,7 @@ import { UserContext } from "../../state/UserContext";
 import { UnitContext } from "../../state/UnitContext";
 import { Navbar } from "../Navbar";
 import InputAdornment from "@mui/material/InputAdornment";
-import {
-  Typography,
-  Box,
-  TextField,
-  Button,
-  Grid,
-  CssBaseline,
-} from "@mui/material";
+import { Typography, Box, TextField, Button, Grid } from "@mui/material";
 
 import StyledWeightChart from "../DataVis/Chart";
 import { db, auth } from "../../firebase";
@@ -29,6 +22,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { convertKgToLbs, convertLbsToKg } from "../../utilities/functions";
 import { parseISO } from "date-fns";
 import DataHeatmap from "../DataVis/Heatmap"; // Import the generic heatmap component
+import StyledBox from "../StyledComponents/StyledBox";
 
 function Weight() {
   const { user, setUser } = useContext(UserContext);
@@ -223,18 +217,6 @@ function Weight() {
     }
   };
 
-  const handleSelectChange = (event) => {
-    const selectedId = event.target.value;
-    setSelectedWeightId(selectedId);
-
-    // Optionally, pre-fill the edit fields with the selected entry's data
-    const selectedWeightEntry = weights.find((w) => w.id === selectedId);
-    if (selectedWeightEntry) {
-      setWeight(selectedWeightEntry.weight);
-      setDateTime(selectedWeightEntry.timestamp.toISOString().slice(0, 16));
-    }
-  };
-
   return (
     <React.Fragment>
       <Grid
@@ -245,25 +227,16 @@ function Weight() {
         justifyContent="flex-start" // Changed from center to flex-start
         sx={{ minHeight: "100vh", paddingTop: "5vh", marginBottom: "5vh" }} // Added paddingTop
       >
-        <Box
-          sx={{
-            border: 2,
-            borderColor: "accent.main",
-            borderRadius: 1,
-            padding: 3,
-            width: "65%",
-            height: "auto",
-            margin: "auto", // Center the box
-          }}
-        >
+        <StyledBox extraStyles={{ padding: 2 }}>
           <DataHeatmap
             data={weights.map((weight) => ({
-              date: weight.timestamp.toISOString().slice(0, 10),
+              date: weight.timestamp.toISOString().split("T")[0],
               value: weight.weight,
             }))}
-            valueLabel="weight (kg)"
+            name="Weight"
+            heatmap_color="#D2E7D6"
           />
-        </Box>
+        </StyledBox>
 
         <Grid>
           <Box
@@ -325,15 +298,12 @@ function Weight() {
           unit={unit}
         />
 
-        <Box
-          sx={{
-            border: 2,
-            borderColor: "accent.main",
-            borderRadius: 4,
+        <StyledBox
+          extraStyles={{
             padding: 3,
             width: "65%",
             height: "auto",
-            margin: "auto", // Center the box
+            margin: "auto",
             marginTop: "30px",
             maxHeight: "300px",
             overflowY: "auto",
@@ -388,7 +358,7 @@ function Weight() {
                 </Box>
               </Box>
             ))}
-        </Box>
+        </StyledBox>
       </Grid>
     </React.Fragment>
   );

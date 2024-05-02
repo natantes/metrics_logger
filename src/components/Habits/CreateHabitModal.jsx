@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import { db } from "../../firebase";
 import { collection, addDoc } from "firebase/firestore";
-import { TextField, Button, IconButton } from "@mui/material";
+import { TextField, Button, IconButton, Grid } from "@mui/material";
 import { SketchPicker } from "react-color";
 import { Tooltip } from "@mui/material";
 
@@ -47,6 +47,7 @@ const CreateHabitModal = ({ isOpen, onRequestClose, userId }) => {
       setName("");
       setUnits("");
       setColor("#ff4500");
+      setShowColorPicker(false);
     }
   };
 
@@ -73,35 +74,42 @@ const CreateHabitModal = ({ isOpen, onRequestClose, userId }) => {
           margin="normal"
         />
 
-        <Tooltip title="Change Color">
-          <Button
-            variant="contained"
-            sx={{
-              marginLeft: 1,
-              color: "black", // Text color
-              borderColor: "black", // Border color
-              backgroundColor: "white", // Background color
-              ":hover": {
-                backgroundColor: "#f5f5f5", // Lighter grey on hover
-                borderColor: "black", // Maintain border color on hover
-              },
-              gap: 1,
-            }}
-            onClick={() => setShowColorPicker((prev) => !prev)}
-          >
-            <IconButton style={{ backgroundColor: color }} />
-            Color
-          </Button>
-        </Tooltip>
-
-        <Button
-          onClick={handleSubmit}
-          variant="contained"
-          color="primary"
-          style={{ marginTop: 20 }}
+        <Grid
+          item
+          xs={12}
+          container
+          justifyContent="flex-end"
+          alignItems="flex-end"
         >
-          Create
-        </Button>
+          <Tooltip title="Change Color">
+            <Button
+              variant="contained"
+              sx={{
+                marginLeft: 1,
+                color: "black", // Text color
+                borderColor: "black", // Border color
+                backgroundColor: "white", // Background color
+                ":hover": {
+                  backgroundColor: "#f5f5f5", // Lighter grey on hover
+                  borderColor: "black", // Maintain border color on hover
+                },
+                gap: 1,
+              }}
+              onClick={() => setShowColorPicker((prev) => !prev)}
+            >
+              <IconButton style={{ backgroundColor: color }} />
+              Color
+            </Button>
+          </Tooltip>
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            color="primary"
+            style={{ marginTop: 20 }}
+          >
+            Create
+          </Button>{" "}
+        </Grid>
       </Modal>
       {showColorPicker && (
         <div style={{ position: "fixed", bottom: 40, right: 40, zIndex: 1500 }}>

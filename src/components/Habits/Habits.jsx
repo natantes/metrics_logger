@@ -16,6 +16,7 @@ import { Menu, MenuItem } from "@mui/material";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import HeatmapColorPicker from "../CommonComponents/ColorPicker";
+import StyledBox from "../StyledComponents/StyledBox";
 
 function Habit({ habit, user }) {
   const [openDialog, setOpenDialog] = useState(false);
@@ -23,7 +24,6 @@ function Habit({ habit, user }) {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [value, setValue] = useState("");
   const [color, setColor] = useState(habit.heatmap_color);
-  // const [showPicker, setShowPicker] = useState(false);
   const timeoutRef = useRef(null);
 
   const openMenu = (event) => {
@@ -32,22 +32,6 @@ function Habit({ habit, user }) {
 
   const closeMenu = () => {
     setMenuAnchor(null);
-  };
-
-  const updateDatabase = async (newColor) => {
-    if (!user || !user.uid || !habit.id) {
-      console.error("User object or Habit ID is undefined.");
-      return;
-    }
-
-    const habitRef = doc(db, "users", user.uid, "habitsList", habit.id);
-    try {
-      await updateDoc(habitRef, {
-        heatmap_color: newColor,
-      });
-    } catch (error) {
-      console.error("Error updating color: ", error);
-    }
   };
 
   const deleteHabit = async () => {
@@ -65,32 +49,6 @@ function Habit({ habit, user }) {
       console.error("Error deleting habit: ", error);
     }
   };
-
-  // const handleColorChange = (color) => {
-  //   setColor(color.hex);
-  //   clearTimeout(timeoutRef.current);
-  //   timeoutRef.current = setTimeout(() => {
-  //     updateDatabase(color.hex);
-  //     setShowPicker(false);
-  //   }, 4000); // Set the timeout for 10 seconds
-  // };
-
-  // const closePicker = () => {
-  //   clearTimeout(timeoutRef.current);
-  //   updateDatabase(color);
-  //   setShowPicker(false);
-  // };
-
-  // const togglePicker = () => {
-  //   if (showPicker) {
-  //     closePicker(); // Handle closing the picker and updating the database
-  //   } else {
-  //     setShowPicker(true);
-  //     timeoutRef.current = setTimeout(() => {
-  //       closePicker();
-  //     }, 4000);
-  //   }
-  // };
 
   useEffect(() => {
     // Cleanup the timeout when the component unmounts
@@ -121,15 +79,7 @@ function Habit({ habit, user }) {
   };
 
   return (
-    <Box
-      sx={{
-        border: 1,
-        borderColor: "accent.main",
-        borderRadius: 1,
-        paddingRight: 4,
-        marginTop: 4,
-      }}
-    >
+    <StyledBox>
       <Grid container sx={{ margin: "auto" }} spacing={2}>
         <Grid item xs={12}>
           <DataHeatmap
@@ -161,27 +111,6 @@ function Habit({ habit, user }) {
             setColor={setColor}
           />
 
-          {/* <Tooltip title="Change Color">
-            <Button
-              variant="contained"
-              sx={{
-                marginLeft: 1,
-                color: "black", // Text color
-                borderColor: "black", // Border color
-                backgroundColor: "white", // Background color
-                ":hover": {
-                  backgroundColor: "#f5f5f5", // Lighter grey on hover
-                  borderColor: "black", // Maintain border color on hover
-                },
-                gap: 1,
-              }}
-              onClick={togglePicker}
-            >
-              <IconButton style={{ backgroundColor: color }} />
-              Color
-            </Button>
-          </Tooltip> */}
-
           <IconButton onClick={openMenu}>
             <MoreVertIcon />
           </IconButton>
@@ -193,17 +122,6 @@ function Habit({ habit, user }) {
           >
             <MenuItem onClick={deleteHabit}>Delete</MenuItem>
           </Menu>
-
-          {/* {showPicker && (
-            <div
-              style={{ position: "fixed", bottom: 40, right: 40, zIndex: 1500 }}
-            >
-              <SketchPicker
-                color={color}
-                onChangeComplete={handleColorChange}
-              />
-            </div>
-          )} */}
         </Grid>
         <Grid item xs={12}>
           <Dialog
@@ -247,7 +165,7 @@ function Habit({ habit, user }) {
           </Dialog>
         </Grid>
       </Grid>
-    </Box>
+    </StyledBox>
   );
 }
 

@@ -14,6 +14,7 @@ import {
 import { Box } from "@mui/material";
 import { convertKgToLbs } from "../../utilities/functions";
 import "chartjs-adapter-date-fns";
+import StyledBox from "../StyledComponents/StyledBox";
 
 // Register the Chart.js components and the Time scale
 ChartJS.register(
@@ -132,11 +133,8 @@ const StyledWeightChart = ({ data, unit }) => {
   };
 
   return (
-    <Box
-      sx={{
-        border: 2,
-        borderColor: "accent.main",
-        borderRadius: 4,
+    <StyledBox
+      extraStyles={{
         padding: 2,
         width: "65%",
         minHeight: "350px",
@@ -147,7 +145,7 @@ const StyledWeightChart = ({ data, unit }) => {
       }}
     >
       <Line data={chartData} options={options} />
-    </Box>
+    </StyledBox>
   );
 };
 
